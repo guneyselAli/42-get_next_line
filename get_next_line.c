@@ -14,52 +14,89 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-char *get_next_line(int fd)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-    char    *str;
-    size_t i;
-    int a;
+	size_t	i;
+	char	*sub;
 
-    i = 0;
-    str = malloc(BUFFER_SIZE);
-    while (i < BUFFER_SIZE) 
-    {
-        a = read(fd, str + i, 1);
-        if (*(str + i) == '\n')
-        {
-            *(str + i + 1) = 0;
-            break;
-        }
-        if (a == 0)
-        {
-            *(str + i) = 0;
-            break;
-        }
-        if (a < 0)
-        {
-            free (str);
-            return (NULL);
-        }
-        i++;
-    }
-    return (str);
+	i = 0;
+	if (!s)
+		return (0);
+	sub = malloc(sizeof(char) * (len + 1));
+	if (!sub)
+		return (0);
+	while (*(s + start) && (i < len))
+		*(sub + i++) = *(s + start++);
+	*(sub + i) = '\0';
+	return (sub);
 }
 
-/*
+int get_next_buffer(int fd, char *str)
+{
+	int a;
+
+	a = read(fd, str, BUFFER_SIZE);
+	if (a == 0)
+	{
+		if (*str != 0)
+			return (2);
+		free(str);
+		return(0);
+	}
+	if (a < 0)
+	{
+		free (str);
+		return (0);
+	}
+	*(str + a) = 0;
+	return (3);
+}
+
+char *get_next_line(int fd)
+{
+	static char	*str;
+	char 		*tmp;
+	char		*line;
+	int			checker;
+
+
+	if (!str)
+	{
+		str = malloc(BUFFER_SIZE + 1);
+		*str = 0;
+	}
+	if (!str)
+		return (0);
+	if (!ft_strchr(str,'\n'))
+		checker = get_next_buffer(fd,str);
+	if (checker == 0)
+		return (0);
+	while (1)
+	{
+		if (ft_strchr(str, '\n'))
+		{	
+			tmp = ft_strchr(str, '\n');
+			line = ft_substr(str, 0, tmp - str + 1);
+			str = ft_strdup(tmp + 1);
+			return (line);
+		}
+		tmp = malloc(BUFFER_SIZE + 1);
+		checker = get_next_buffer(fd,tmp);
+		str = ft_strjoin(str,tmp);
+		if (checker == 2)
+			return (str);
+	}
+}
+
 int main(void)
 {
-    int fd = open("get_next_line.c", O_RDWR);
+	int fd = open("alternate_line_nl_with_nl", O_RDWR);
+	char *a = get_next_line(fd);
+	while (a)
+	{
+		printf("%s",a);
+		a = get_next_line(fd);
+	}
+	printf("%s", a);
+}
 
-    while (1)
-    {
-        char *a = get_next_line(fd);
-
-        printf("%s",a);
-
-        if (!a)
-        {
-            free(a);
-            break;
-        }
-    }
-}*/
