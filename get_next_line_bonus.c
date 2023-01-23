@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguneyse <aguneyse@student.42istanbul.com  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/17 17:26:06 by aguneyse          #+#    #+#             */
-/*   Updated: 2023/01/17 17:26:07 by aguneyse         ###   ########.fr       */
+/*   Created: 2023/01/23 19:08:24 by aguneyse          #+#    #+#             */
+/*   Updated: 2023/01/23 19:08:25 by aguneyse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -89,55 +89,28 @@ char	*ft_seperate_newline(char **str)
 
 char	*get_next_line(int fd)
 {
-	static char	*str;
+	static char	*str[256];
 	char		*tmp;
 
-	if (!str)
+	if (fd < 0 || fd > 256)
+		return (0);
+	if (!str[fd])
 	{
-		str = malloc(BUFFER_SIZE + 1);
-		*str = 0;
+		str[fd] = malloc(BUFFER_SIZE + 1);
+		*str[fd] = 0;
 	}
-	if (!str)
+	if (!str[fd])
 		return (0);
-	str = new_str(fd, str);
-	if (!str)
+	str[fd] = new_str(fd, str[fd]);
+	if (!str[fd])
 		return (0);
-	if (ft_strchr(str, '\n'))
-		return (ft_seperate_newline(&str));
-	if (ft_strlen(str))
+	if (ft_strchr(str[fd], '\n'))
+		return (ft_seperate_newline(&str[fd]));
+	if (ft_strlen(str[fd]))
 	{
-		tmp = str;
-		str = 0;
+		tmp = str[fd];
+		str[fd] = 0;
 		return (tmp);
 	}
 	return (0);
 }
-
-/* ULIMIT ARASTIRILACAK 
-(ulimit -n file descriptorun alabileceği maks değeri veriyor olması lazım (256));
-int main(void)
-{
-	int fd = open("emptydoc", O_RDWR);
-	char *a = get_next_line(fd);
-	while (a)
-	{
-		printf("%s",a);
-		a = get_next_line(fd);
-	}
-	printf("%s",a);
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-
-	printf("\n%d\n", fd);
-	int fd2 = open("get_next_line_utils.c" , O_RDWR);
-	printf("%d\n" ,  fd2);
-	
-	close (fd2);
-
-	int fd3 = open("get_next_line.h", O_RDWR);
-
-	printf("%d\n", fd3);
-
-}*/
