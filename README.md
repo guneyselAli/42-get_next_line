@@ -5,4 +5,5 @@ In this project we will be creating a function that returns a line from a file. 
 Outcomes of this project:\
 Static variables\
 File descriptors\
+**Handling leaks**\
 String manipulations
