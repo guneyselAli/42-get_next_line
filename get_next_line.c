@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <fcntl.h>
-#include <stdio.h>
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
@@ -112,32 +110,3 @@ char	*get_next_line(int fd)
 	}
 	return (0);
 }
-
-/* ULIMIT ARASTIRILACAK 
-(ulimit -n file descriptorun alabileceği maks değeri veriyor olması lazım (256));
-int main(void)
-{
-	int fd = open("emptydoc", O_RDWR);
-	char *a = get_next_line(fd);
-	while (a)
-	{
-		printf("%s",a);
-		a = get_next_line(fd);
-	}
-	printf("%s",a);
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-
-	printf("\n%d\n", fd);
-	int fd2 = open("get_next_line_utils.c" , O_RDWR);
-	printf("%d\n" ,  fd2);
-	
-	close (fd2);
-
-	int fd3 = open("get_next_line.h", O_RDWR);
-
-	printf("%d\n", fd3);
-
-}*/
